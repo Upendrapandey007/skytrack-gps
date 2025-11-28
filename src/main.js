@@ -24,15 +24,12 @@ const socket = io(import.meta.env.VITE_SERVER_URL || 'http://localhost:3000');
 // Stats Container
 const statsContainer = document.getElementById('stats-container');
 statsContainer.appendChild(createStatWidget('Active Vehicles', '0'));
-statsContainer.appendChild(createStatWidget('Avg Battery', '0%'));
 
 // Update Stats
 function updateStats(vehicles) {
   const count = vehicles.length;
-  const avgBattery = Math.round(vehicles.reduce((acc, v) => acc + v.battery, 0) / count) || 0;
 
   statsContainer.children[0].querySelector('.stat-value').textContent = count;
-  statsContainer.children[1].querySelector('.stat-value').textContent = `${avgBattery}%`;
 
   document.getElementById('vehicle-count').textContent = count;
   document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
@@ -62,12 +59,38 @@ socket.on('vehicle-update', (vehicles) => {
     const listContainer = document.getElementById('vehicle-list');
     if (!vehicleElements[vehicle.id]) {
       const card = createVehicleCard(vehicle);
-      card.addEventListener('click', () => {
+
+      // Add click handler to zoom to vehicle
+      card.addEventListener('click', (e) => {
+        // Don't zoom if clicking delete button
+        if (e.target.closest('.delete-btn')) return;
+
         map.flyTo([vehicle.lat, vehicle.lng], 16);
         // Highlight card
         document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
       });
+
+      // Add delete button handler
+      const deleteBtn = card.querySelector('.delete-btn');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm(`Delete ${vehicle.name}?`)) {
+            // Emit delete event to server
+            socket.emit('vehicle-delete', vehicle.id);
+
+            // Remove from UI immediately
+            if (markers[vehicle.id]) {
+              markers[vehicle.id].remove();
+              delete markers[vehicle.id];
+            }
+            card.remove();
+            delete vehicleElements[vehicle.id];
+          }
+        });
+      }
+
       listContainer.appendChild(card);
       vehicleElements[vehicle.id] = card;
     } else {
@@ -86,4 +109,17 @@ socket.on('vehicle-update', (vehicles) => {
       }
     }
   });
+});
+
+// Sidebar Toggle Functionality
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const app = document.getElementById('app');
+
+sidebarToggle.addEventListener('click', () => {
+  app.classList.toggle('sidebar-collapsed');
+
+  // Invalidate map size after animation completes
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 300);
 });

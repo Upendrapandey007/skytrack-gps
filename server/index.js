@@ -30,6 +30,18 @@ io.on('connection', (socket) => {
         io.emit('vehicle-update', vehicles);
     });
 
+    // Handle vehicle deletion
+    socket.on('vehicle-delete', (vehicleId) => {
+        console.log('🗑️ Deleting vehicle:', vehicleId);
+        const index = vehicles.findIndex(v => v.id === vehicleId);
+        if (index !== -1) {
+            vehicles.splice(index, 1);
+            console.log('✅ Vehicle deleted. Remaining:', vehicles.length);
+            // Broadcast updated list to all clients
+            io.emit('vehicle-update', vehicles);
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('Client disconnected:', socket.id);
     });
