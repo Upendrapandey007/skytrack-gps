@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SkyTrack - GPS Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --text-primary: #f8fafc;
+            --accent-color: #38bdf8;
+            --success-color: #4ade80;
+            --danger-color: #f87171;
+            --font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+        }
+
+        .status {
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .status.active {
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .status.inactive {
+            color: var(--text-primary);
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        input:focus {
+            outline: 2px solid var(--accent-color);
+            border-color: transparent;
+        }
+
+        button {
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button.stop {
+            background: var(--danger-color);
+            box-shadow: 0 0 20px rgba(248, 113, 113, 0.4);
+        }
+
+        .info {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🛰️ SkyTrack GPS</h1>
+    <input type="text" id="device-name" placeholder="Enter Device Name" value="My Bike">
+    <div id="status" class="status inactive">Ready to Track</div>
+    <button id="toggle-btn">Start Tracking</button>
+    <div class="info">
+        <p>Lat: <span id="lat">-</span></p>
+        <p>Lng: <span id="lng">-</span></p>
+    </div>
+    <script type="module" src="/src/tracker.js"></script>
+</body>
+
+</html>
