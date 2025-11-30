@@ -1,4 +1,14 @@
 {
+  "rewrites": [
+    {
+      "source": "/tracker.html",
+      "destination": "/tracker.html"
+    },
+    {
+      "source": "/tracker",
+      "destination": "/tracker.html"
+    }
+  ],
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite"
